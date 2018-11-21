@@ -31,14 +31,18 @@ public class Garden {
 	}
 
 	public void plantTree(int r, int c) {
-		garden[r][c] = 't';
-		garden[r + 1][c] = 't';
-		garden[r][c + 1] = 't';
-		garden[r + 1][c + 1] = 't';
+		if ((r == size - 1) || (c == size - 1)) {
+			System.out.println("Error, out of space");
+		} else {
+			garden[r][c] = 't';
+			garden[r + 1][c] = 't';
+			garden[r][c + 1] = 't';
+			garden[r + 1][c + 1] = 't';
+		}
 	}
 
 	public void removeFlower(int r, int c) {
-		garden[r][c] = '_';
+		garden[r][c] = '-';
 	}
 
 	public int countPossibleTrees() {
@@ -88,22 +92,19 @@ public class Garden {
 		aString = "";
 		for (int r = 0; r < garden.length; r++) {
 			for (int c = 0; c < garden[0].length; c++) {
-				aString += garden[r][c] + " " ;
+				aString += garden[r][c] + " ";
 			}
 			aString += "\n";
 		}
 		return aString;
 	}
 
-	public void printAr() {
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				System.out.print(garden[i][j] + " ");
-			}
-			System.out.println();
-
-		}
-
-	}
-
+//	public void printAr() {
+//		for (int i = 0; i < size; i++) {
+//			for (int j = 0; j < size; j++) {
+//				System.out.print(garden[i][j] + " ");
+//			}
+//			System.out.println();
+//		}
+//	}
 }
