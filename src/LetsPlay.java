@@ -196,8 +196,20 @@ public class LetsPlay {
 			}
 		}
 		else if (rolls[whichPlayer] == 5 || rolls[whichPlayer] == 10) {
-			if (players[whichPlayer].whatIsPlanted(r, c) == '-') {
-
+			players[whichPlayer].eatHere(r, c);
+//			if (players[whichPlayer].whatIsPlanted(r, c) == '-') {
+//				boolean found = false;
+//				while (!found) {
+//					r = rand.nextInt(size);
+//					c = rand.nextInt(size);
+//					if (players[whichPlayer].whatIsPlanted(r, c) == 'f' || players[whichPlayer].whatIsPlanted(r, c) == 't') {}
+//					players[whichPlayer].eatHere(r, c);
+//					found = true;
+//				}
+//			}
+//			else {
+//				players[whichPlayer].eatHere(r, c);
+//			}
 			
 			
 		}
