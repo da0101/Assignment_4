@@ -42,7 +42,7 @@ public class Garden {
 	}
 
 	public void removeFlower(int r, int c) {
-		garden[r][c] = '-';
+		garden[r][c] = '-'; 
 	}
 
 	public int countPossibleTrees() {
