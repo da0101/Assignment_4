@@ -7,10 +7,14 @@ public class LetsPlay {
 	static int size;
 	static int numOfPlayers;
 	static Player[] players;
+	private static boolean win = true;;
 
 	public static void main(String[] args) {
+//		Garden garden = new Garden();
+//		System.out.println(garden);
+
 		initGame();
-		whichPlayerGoesFirst();
+		
 
 	}
 
@@ -97,6 +101,7 @@ public class LetsPlay {
 			players[i] = new Player(name, size);
 		}
 		System.out.println();
+		whichPlayerGoesFirst();
 	}
 
 	private static void whichPlayerGoesFirst() {
@@ -109,15 +114,15 @@ public class LetsPlay {
 				rolls[i] = dice.rollDice();
 				System.out.println("   " + players[i].getName() + ": " + rolls[i]);
 			}
+			// Initializing variables outside the loop 
 			int k = 0;
 			int a = 0;
 			for (k = 0; k < players.length; k++) {
 				for (a = k + 1; a < players.length; a++) {
 					if (rolls[k] == rolls[a]) {
+						System.out.println("We will start over as -" + rolls[k] + "- was rolled by " + players[k].getName() + " as well.\n");
 						check = true;
 						k = a = players.length;
-
-						System.out.println("\nRoll again!!! ");
 					} else
 						check = false;
 				}
@@ -132,9 +137,21 @@ public class LetsPlay {
 		}
 		for (int i = 0; i < players.length; i++) {
 			if (rolls[i] == largest) {
-				System.out.println("\nPlayer with largest number ========================= " + players[i].getName());
+				System.out.println("\n" + players[i].getName() + " goes first.");
 			}
 		}
-		System.out.println("\nThe largest number is " + largest);
+		System.out.println("---------------------");
+		playGame(); 
+	}
+	
+	private static void playGame() {
+		
+		for (int i = 0; i < players.length; i++) {
+			players[i].showGarden();
+		}
+		while (!win) {
+			
+		}
+		
 	}
 }

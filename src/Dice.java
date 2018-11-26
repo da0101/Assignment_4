@@ -27,7 +27,7 @@ public class Dice {
 	public int rollDice() {
 		this.die1 = dice.nextInt(6) + 1;
 		this.die2 = dice.nextInt(6) + 1;
-		return this.die1 + this.die2;
+		return this.die1 + this.die2; 
 	}
 
 }

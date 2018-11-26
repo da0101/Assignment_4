@@ -88,15 +88,26 @@ public class Garden {
 	}
 
 	public String toString() {
-		String aString;
-		aString = "";
+		String aString = "";
+		System.out.print("  |");
 		for (int r = 0; r < garden.length; r++) {
 			for (int c = 0; c < garden[0].length; c++) {
-				aString += garden[r][c] + " ";
+				if (r < 1) {
+					System.out.print(c + " ");
+					if (c == garden.length - 1) {
+						System.out.println();
+					}
+				}
+				if (c < 1) {
+					aString +="\n" + r + " |" + garden[r][c] + " ";
+				}
+				else {
+					aString += garden[r][c] + " ";
+				}
 			}
 			aString += "\n";
 		}
-		return aString;
+		return aString; 
 	}
 
 //	public void printAr() {
