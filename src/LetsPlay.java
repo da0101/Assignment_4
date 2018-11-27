@@ -9,6 +9,15 @@ public class LetsPlay {
 	static Player[] players;
 
 	public static void main(String[] args) {
+//		Player p = new Player("qwe", 4);
+//		p.plantTreeInGarden(0, 0);
+//		System.out.println(p.isGardenFull());
+//		if (p.isGardenFull() != false) {
+//			p.eatHere();
+//		}
+
+
+		
 		initGame();
 	}
 
@@ -280,7 +289,7 @@ public class LetsPlay {
 			case 3: plantTreeAndFlower(player); break;
 			case 6: plantTwoFlower(player); break;
 			case 12: plantTwoTrees(player); break;
-			case 5: case 10:  if (!player.isGardenFull()) player.eatHere(); break;
+			case 5: case 10: if (player.isGardenFull() != false) player.eatHere(); break;
 			case 2: case 4: case 8: plantATree(player); break;
 			case 7: case 9: case 11: plantAFlower(player); break;		
 		}
