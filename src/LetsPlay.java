@@ -3,27 +3,18 @@ import java.util.Scanner;
 
 // Driver class
 public class LetsPlay {
+	
 	static Scanner in = new Scanner(System.in);
-	static Random rand  = new Random();
-	static Dice dice = new Dice();
-	static int size;
-	static int numOfPlayers;
-	static int[] rolls; 
+	static Random rand = new Random();
 	static Player[] players;
 
 	public static void main(String[] args) {
-//		Garden garden = new Garden();
-//		System.out.println(garden);
-
 		initGame();
-
 	}
 
+
 	private static void initGame() {
-		// printWelcomeBanner();
-		askUserSizeOfBoard();
-		askUserNumberOfPlayers();
-		initPlayers();
+		initPlayers(askUserSizeOfBoard(), askUserNumberOfPlayers());
 	}
 
 	private static void printWelcomeBanner() {
@@ -54,14 +45,14 @@ public class LetsPlay {
 
 	}
 
-	private static void askUserSizeOfBoard() {
+	private static int askUserSizeOfBoard() {
 		System.out.print(
 				"The default garden size is a 3x3 square. You can use this default board size or change the size\n\n"
 						+ "---------------------------------\n"
 						+ "Enter 0 to use the default garden size or -1 to enter your own size: ");
+		int size = 0;
 		boolean check;
 		do {
-
 			check = true;
 			size = in.nextInt();
 			System.out.println("-----------------------------");
@@ -90,10 +81,11 @@ public class LetsPlay {
 			}
 
 		} while (check);
+		return size;
 	}
 
-	private static void askUserNumberOfPlayers() {
-
+	private static int askUserNumberOfPlayers() {
+		int numOfPlayers = 0;
 		boolean check;
 		do {
 			System.out.println("How many gardeners will there be (minimum 2 required to play, max allowed 10)? ");
@@ -106,137 +98,226 @@ public class LetsPlay {
 				check = !check;
 			}
 		} while (check);
+		return numOfPlayers;
 	}
 
-	private static void initPlayers() {
-		players = new Player[numOfPlayers];
-		String name = new String();
+	private static void initPlayers(int gardenSize, int numberPlayers) {
+		players = new Player[numberPlayers];
 		for (int i = 0; i < players.length; i++) {
 			System.out.print("--> Name of player 1 (no spaces allowed): " + (i + 1) + ": ");
-			name = in.next();
-			players[i] = new Player(name, size);
+			String name = in.next();
+			players[i] = new Player(name, gardenSize);
 		}
 		System.out.println();
 		whichPlayerGoesFirst();
 	}
 
 	private static void whichPlayerGoesFirst() {
-		rolls = new int[numOfPlayers];
 		int largest = 0;
-		boolean goFirst = false;
+		Player firstPlayer = null;
 		boolean check = true;
 		System.out.println("Let's see who goes first ...");
 		while (check) {
-			for (int i = 0; i < players.length; i++) {
-				rolls[i] = dice.rollDice();
-				System.out.println("   " + players[i].getName() + ": " + rolls[i]);
+			largest = 0;
+			for (Player player : players) {
+				System.out.println("   " + player.getName() + ": " + player.rollDice());
+				if (largest < player.getDiceValue()) {
+					largest = player.getDiceValue();
+					firstPlayer = player;
+				}
 			}
-			// Initializing variables outside the loop
-			int k = 0;
-			int a = 0;
-			for (k = 0; k < players.length; k++) {
-				for (a = k + 1; a < players.length; a++) {
-					if (rolls[k] == rolls[a]) {
-						System.out.println("We will start over as -" + rolls[k] + "- was rolled by "
-								+ players[k].getName() + " as well.\n");
-						check = true;
-						k = a = players.length;
-					} else
-						check = false;
+			check = isRolledDuplicate();
+		}
+				System.out.println("\n" + firstPlayer.getName() + " goes first.\n\n" + "Time to play!!!\n" + "---------------------");
+				playGame(firstPlayer);
+		System.out.println("---------------------");
+
+	}
+	
+	private static boolean isRolledDuplicate() {
+		for (Player player : players) {
+			for (Player other : players) {
+				if (player != other && player.diceEquals(other)) {
+					System.out.println("We will start over as -" + player.getDiceValue() + "- was rolled by " + other.getName() + " as well.\n");
+					return true;
 				}
 			}
 		}
+		return false;
+	}
 
-		for (int i = 0; i < players.length; i++) {
-			if (largest < rolls[i]) {
-				largest = rolls[i];
-			}
-
+	private static void printWhatShouldBePlanted(int dice) {
+		switch (dice) {
+		case 3: System.out.println("You must plant a tree (2x2) and a flower (1x1)"); break;
+		case 6: System.out.println("You must plant 2 flowers (2 times 1x1)"); break;
+		case 12: System.out.println("You must plant 2 trees (2 time 2x2)"); break;
+		case 7: case 9: case 11: System.out.println("You must plant a flower (1x1)"); break;
+		case 2: case 4: case 8: System.out.println("You must plant a tree (2x2)"); break;
 		}
-		for (int i = 0; i < players.length; i++) {
-			if (rolls[i] == largest) {
-				System.out.println("\n" + players[i].getName() + " goes first.");
-				goFirst = true;
-				playGame(i);
+	}
 
-			}
-		}
-		System.out.println("---------------------");
-		
+	
+	private static void plantTreeAndFlower(Player player) {
+		System.out.print("You have " + player.howManyTreesPossible() + " spaces to plant trees and "
+				+ player.howManyFlowersPossible() + " to plant flowers\n"
+				+ "Let's start with the tree." + "Enter coordinates as row column: ");
+		boolean found = false;
+		do {
+			
+			int r = in.nextInt();
+			int c = in.nextInt();
+			if (player.whatIsPlanted(r, c) != '-' && (r < player.getSizeOfBoard()+1 || c < player.getSizeOfBoard()+1)) {
+				System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a "
+						+ player.whatIsPlanted(r, c) + "\n"
+								+ "Please enter a new set of coordinates: ");
+				found = false;
+			} else
+				player.plantTreeInGarden(r, c);
+			System.out.println("You still have a flower to plant (1x1)");
+
+			r = in.nextInt();
+			c = in.nextInt();
+			if (player.whatIsPlanted(r, c) != '-') {
+				System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a "
+						+ player.whatIsPlanted(r, c));
+				found = false;
+			} else
+				player.plantFlowerInGarden(r, c);
+			found = true;
+		} while (!found);
 	}
 	
-	private static void playersTurn() {
-		
+	private static void plantTwoFlower(Player player) {
+		System.out.print("You have " + player.howManyFlowersPossible() + " spaces to plant flowers\n"
+				+ "Enter coordinates as row column: ");
+		for (int i = 0; i < 2; i++) {
+			boolean found = false;
+			do {
+				int r = in.nextInt();
+				int c = in.nextInt();
+				if (player.whatIsPlanted(r, c) != '-' && (r < player.getSizeOfBoard()+1 || c < player.getSizeOfBoard()+1)) {
+					System.out.println("***Sorry but location " + r + "," + c + " is already taken by a "
+							+ player.whatIsPlanted(r, c) + "\n"
+									+ "Please enter a new set of coordinates: ");
+					found = false;
+				} else {
+					player.plantFlowerInGarden(r, c);
+					System.out.println((i < 1) ? "You still have a flower to plant (2x2)" : "");
+					found = true;
+				}
+			} while (!found);
+		}
+	}
+	
+	private static void plantTwoTrees(Player player) {
+		System.out.print("You have " + player.howManyTreesPossible() + " spaces to plant trees\n"
+				+ "Enter coordinates as row column: ");
+		for (int i = 0; i < 2; i++) {
+			boolean found = false;
+			do {
+				int r = in.nextInt();
+				int c = in.nextInt();
+				if (player.whatIsPlanted(r, c) != '-' && (r < player.getSizeOfBoard()+1 || c < player.getSizeOfBoard()+1)) {
+					System.out.println("***Sorry but location " + r + "," + c + " is already taken by a "
+							+ player.whatIsPlanted(r, c) + "\n"
+									+ "Please enter a new set of coordinates: ");
+					found = false;
+				} else {
+					player.plantTreeInGarden(r, c);
+					System.out.println((i < 1) ? "You still have a tree to plant (2x2)" : "");
+					found = true;
+				}
+			} while (!found);
+		}
+	}
+	
+	private static void plantATree(Player player) {
+		System.out.print("You have " + player.howManyTreesPossible() + " spaces to plant trees\n"
+				+ " Enter coordinates as row column: ");
+		boolean found = false;
+		do {
+			int r = in.nextInt();
+			int c = in.nextInt();
+			if (player.whatIsPlanted(r, c) != '-' && (r < player.getSizeOfBoard()+1 || c < player.getSizeOfBoard()+1)) {
+				System.out.println("***Sorry but location " + r + "," + c + " is already taken by a "
+						+ player.whatIsPlanted(r, c) + "\n"
+								+ "Please enter a new set of coordinates: ");
+				found = false;
+			} 
+			else {
+				player.plantTreeInGarden(r, c);
+				found = true;
+			}
+		} while (!found);
+	}
+	
+	private static void plantAFlower(Player player) {
+		System.out.print("You have " + player.howManyFlowersPossible() + " spaces to plant flowers\n"
+				+ " Enter coordinates as row column: ");
+		boolean found = false;
+		do {
+			int r = in.nextInt();
+			int c = in.nextInt();
+			if (player.whatIsPlanted(r, c) != '-' && (r < player.getSizeOfBoard()+1 || c < player.getSizeOfBoard()+1)) {
+				System.out.println("***Sorry but location " + r + "," + c + " is already taken by a "
+						+ player.whatIsPlanted(r, c) + "\n"
+								+ "Please enter a new set of coordinates: ");
+				found = false;
+			}
+			else {
+				player.plantFlowerInGarden(r, c);
+				found = true;
+			}
+		} while (!found);
 	}
 
-	private static void playGame(int whichPlayer) {
-		boolean win = true;
-		int r = 0, c = 0;
-		rolls[whichPlayer] = dice.rollDice();
-		System.out.println(players[whichPlayer].getName() + " rolled " + rolls[whichPlayer] + "(Die 1: " + dice.getDie1() + " Die 2: " + dice.getDie2());
-		players[whichPlayer].showGarden();
-		if (rolls[whichPlayer] == 3) {
-			r = in.nextInt();
-			c = in.nextInt();
-			players[whichPlayer].plantTreeInGarden(r, c);
-			players[whichPlayer].plantFlowerInGarden(r, c);
+	private static void playersTurn(Player player) {
+		System.out.println(player.getName() + ", you rolled " + player.rollDice() + " (Die 1: " + player.getPlayerDice().getDie1() + " Die 2: " + player.getPlayerDice().getDie2() + ")");
+		printWhatShouldBePlanted(player.getDiceValue());
+		player.showGarden();
+
+		switch (player.getDiceValue()) {
+			case 3: plantTreeAndFlower(player); break;
+			case 6: plantTwoFlower(player); break;
+			case 12: plantTwoTrees(player); break;
+			case 5: case 10:  if (!player.isGardenFull()) player.eatHere(); break;
+			case 2: case 4: case 8: plantATree(player); break;
+			case 7: case 9: case 11: plantAFlower(player); break;		
 		}
-		else if (rolls[whichPlayer] == 6) {
-			for (int i = 0; i < 2; i++) {
-				r = in.nextInt();
-				c = in.nextInt();
-				players[whichPlayer].plantFlowerInGarden(r, c);
-			}	
-		}
-		else if (rolls[whichPlayer] == 12) {
-			for (int i = 0; i < 2; i++) {
-				r = in.nextInt();
-				c = in.nextInt();
-				players[whichPlayer].plantTreeInGarden(r, c);
+		System.out.println("\n============================\n");
+
+	}
+
+	private static void playGame(Player firstPlayer) {
+		boolean win = false;
+		int rounds  = 0;
+		Player winner = null;
+		do {
+			playersTurn(firstPlayer);
+			for (Player player : players) {
+				if (player != firstPlayer) {
+					playersTurn(player);
+				}
+				if (player.isGardenFull()) {
+					winner  = player;
+					win = true;
+				}
 			}
+			rounds++;
+		} while (!win);
+		printResultsOfTheGame(winner,  rounds);
+	}
+	
+	private static void printResultsOfTheGame(Player winner, int rounds) {
+		System.out.println("FINAL RESULTS\n" 
+							+ "-------------");
+		System.out.println("Here are the gardens after " + rounds + " rounds");
+		for (Player player : players) {
+			System.out.println(player.getName() + "'s garden");
+			player.showGarden();
 		}
-		else if (rolls[whichPlayer] == 5 || rolls[whichPlayer] == 10) {
-			players[whichPlayer].eatHere(r, c);
-//			if (players[whichPlayer].whatIsPlanted(r, c) == '-') {
-//				boolean found = false;
-//				while (!found) {
-//					r = rand.nextInt(size);
-//					c = rand.nextInt(size);
-//					if (players[whichPlayer].whatIsPlanted(r, c) == 'f' || players[whichPlayer].whatIsPlanted(r, c) == 't') {}
-//					players[whichPlayer].eatHere(r, c);
-//					found = true;
-//				}
-//			}
-//			else {
-//				players[whichPlayer].eatHere(r, c);
-//			}
-			
-			
-		}
-		else if (rolls[whichPlayer]%2 == 0) {
-			r = in.nextInt();
-			c = in.nextInt();
-			players[whichPlayer].plantTreeInGarden(r, c);
-		}
-		else if (rolls[whichPlayer]%2 > 0) {
-			r = in.nextInt();
-			c = in.nextInt();
-			players[whichPlayer].plantFlowerInGarden(r, c);
-		}
-		
-		players[whichPlayer].showGarden();
-//		for (int i = 0; i < players.length; i++) {
-//			if (i == whichPlayer) {
-//				rolls[whichPlayer] = dice.rollDice();
-//				System.out.println(players[whichPlayer].getName() + " rolled " + rolls[whichPlayer] + "(Die 1: " + dice.getDie1() + " Die 2: " + dice.getDie2());
-//				continue;
-//			}		
-//			rolls[i] = dice.rollDice();
-//			System.out.println(players[i].getName() + " rolled " + rolls[i] + "(Die 1: " + dice.getDie1() + " Die 2: " + dice.getDie2());
-//		}
-
-		while (!win) {
-
-		}
+		System.out.println("And the winner is ..... " + winner.getName() + "!!!!!\n"
+							+ "What a beautiful garden you have.\n\n"
+							+ "Hope you had fun!!!!");
 	}
 }

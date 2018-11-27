@@ -1,5 +1,8 @@
+import java.util.Random;
 
 public class Garden {
+	
+	Random rand = new Random();
 
 	private int size = 3;
 	private char[][] garden;
@@ -27,18 +30,46 @@ public class Garden {
 	}
 
 	public void plantFlower(int r, int c) {
-		garden[r][c] = 'f';
+		if (r >= size || c >= size) {
+			System.out.println("*** You cannot plant Flowers outside your garden!!!\n"
+					+ "--------------------------------------------------");
+			return;
+		}
+		else {
+			garden[r][c] = 'f';
+		}
 	}
 
 	public void plantTree(int r, int c) {
-		if ((r == size - 1) || (c == size - 1)) {
-			System.out.println("Error, out of space");
-		} else {
+		if (r >= size-1 || c >= size-1) {
+			System.out.println("*** You cannot plant Trees outside your garden!!!\n"
+					+ "-------------------------------------------------");
+			return;
+		}
+		else {
 			garden[r][c] = 't';
 			garden[r + 1][c] = 't';
 			garden[r][c + 1] = 't';
 			garden[r + 1][c + 1] = 't';
 		}
+		return;
+	}
+	
+	public void removeRandom() {
+		boolean found = false;
+		do {
+			int r = rand.nextInt(size);
+			int c = rand.nextInt(size);
+			if (getInLocation(r, c) == '-')  {
+				found = false;
+			} else {
+				removeFlower(r, c);
+				found = true;
+				System.out.println("The rabbit ate whatever was planted in location (" + r + "," + c + ")");
+				System.out.println(this);
+				return;
+			}
+		} while (!found);
 	}
 
 	public void removeFlower(int r, int c) {
