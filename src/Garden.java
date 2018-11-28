@@ -53,17 +53,6 @@ public class Garden {
 		return;
 	}
 
-	// ==================
-//	public boolean evalSpaceForTree(int r, int c) {
-//		if (getInLocation(r, c) != '-' && (r < size + 1 || c < size + 1)) {
-//			System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
-//					+ "\n" + "Please enter a new set of coordinates: ");
-//			return false;
-//		} else
-//			plantTree(r, c);
-//		return true;
-//	}
-
 	public boolean evalSpaceForTree(int r, int c) {
 		if (getInLocation(r, c) == '-') {
 			plantTree(r, c);
@@ -74,16 +63,6 @@ public class Garden {
 			return false;
 		}
 	}
-
-//	public boolean evalSpaceForFlower(int r, int c) {
-//		if (getInLocation(r, c) != '-' && (r < size + 1 || c < size + 1)) {
-//			System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
-//					+ "\nPlease enter a new set of coordinates: ");
-//			return false;
-//		} else
-//			plantFlower(r, c);
-//		return true;
-//	}
 
 	public boolean evalSpaceForFlower(int r, int c) {
 		if (getInLocation(r, c) == '-') {
