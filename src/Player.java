@@ -42,11 +42,15 @@ public class Player {
 	}
 	
 	public void eatHere() {
-		if (howManyTreesPossible() > 0 || howManyFlowersPossible() > 0) {
-			garden.removeRandom();
-		}
-		else 
-			return;	
+		garden.removeRandom();
+	}
+	
+	public boolean evalPlayersTree(int r, int c) {
+		return garden.evalSpaceForTree(r, c);
+	}
+	
+	public boolean evalPlayersFlower(int r, int c) {
+		return garden.evalSpaceForFlower(r, c);
 	}
 	
 	

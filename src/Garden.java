@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class Garden {
-	
+
 	Random rand = new Random();
 
 	private int size = 3;
@@ -34,19 +34,17 @@ public class Garden {
 			System.out.println("*** You cannot plant Flowers outside your garden!!!\n"
 					+ "--------------------------------------------------");
 			return;
-		}
-		else {
+		} else {
 			garden[r][c] = 'f';
 		}
 	}
 
 	public void plantTree(int r, int c) {
-		if (r >= size-1 || c >= size-1) {
+		if (r >= size - 1 || c >= size - 1) {
 			System.out.println("*** You cannot plant Trees outside your garden!!!\n"
 					+ "-------------------------------------------------");
 			return;
-		}
-		else {
+		} else {
 			garden[r][c] = 't';
 			garden[r + 1][c] = 't';
 			garden[r][c + 1] = 't';
@@ -54,26 +52,63 @@ public class Garden {
 		}
 		return;
 	}
-	
+
+	// ==================
+//	public boolean evalSpaceForTree(int r, int c) {
+//		if (getInLocation(r, c) != '-' && (r < size + 1 || c < size + 1)) {
+//			System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
+//					+ "\n" + "Please enter a new set of coordinates: ");
+//			return false;
+//		} else
+//			plantTree(r, c);
+//		return true;
+//	}
+
+	public boolean evalSpaceForTree(int r, int c) {
+		if (getInLocation(r, c) == '-') {
+			plantTree(r, c);
+			return true;
+		} else {
+			System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
+					+ "\n" + "Please enter a new set of coordinates: ");
+			return false;
+		}
+	}
+
+//	public boolean evalSpaceForFlower(int r, int c) {
+//		if (getInLocation(r, c) != '-' && (r < size + 1 || c < size + 1)) {
+//			System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
+//					+ "\nPlease enter a new set of coordinates: ");
+//			return false;
+//		} else
+//			plantFlower(r, c);
+//		return true;
+//	}
+
+	public boolean evalSpaceForFlower(int r, int c) {
+		if (getInLocation(r, c) == '-') {
+			plantFlower(r, c);
+			return true;
+		} else {
+			System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
+					+ "\nPlease enter a new set of coordinates: ");
+			return false;
+		}
+	}
+
+	// =================
 	public void removeRandom() {
-		boolean found = false;
-		do {
-			int r = rand.nextInt(size);
-			int c = rand.nextInt(size);
-			if (getInLocation(r, c) == '-')  {
-				found = false;
-			} else {
-				removeFlower(r, c);
-				found = true;
-				System.out.println("The rabbit ate whatever was planted in location (" + r + "," + c + ")");
-				System.out.println(this);
-				return;
-			}
-		} while (!found);
+		int r = rand.nextInt(size);
+		int c = rand.nextInt(size);
+		if (getInLocation(r, c) != '-') {
+			removeFlower(r, c);
+			System.out.println("The rabbit ate whatever was planted in location (" + r + "," + c + ")");
+			System.out.println(this);
+		}
 	}
 
 	public void removeFlower(int r, int c) {
-		garden[r][c] = '-'; 
+		garden[r][c] = '-';
 	}
 
 	public int countPossibleTrees() {
@@ -130,23 +165,13 @@ public class Garden {
 					}
 				}
 				if (c < 1) {
-					aString +="\n" + r + " |" + garden[r][c] + "  ";
-				}
-				else {
+					aString += "\n" + r + " |" + garden[r][c] + "  ";
+				} else {
 					aString += garden[r][c] + "  ";
 				}
 			}
 			aString += "\n";
 		}
-		return aString; 
+		return aString;
 	}
-
-//	public void printAr() {
-//		for (int i = 0; i < size; i++) {
-//			for (int j = 0; j < size; j++) {
-//				System.out.print(garden[i][j] + " ");
-//			}
-//			System.out.println();
-//		}
-//	}
 }
