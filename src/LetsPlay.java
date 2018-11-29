@@ -10,20 +10,11 @@ public class LetsPlay {
 	static Player[] players;
 
 	public static void main(String[] args) {
-//		Player p = new Player("Qwe", 3);
-//		
-//		p.plantTreeInGarden(1, 1);
-//
-//		p.showGarden();
-//		System.out.println(p.evalSpaceAndPlantTree(0, 0));
-//		System.out.println("------------------");
-////		p.plantTreeInGarden(1, 0);
-
-
 		initGame();
 	}
 
 	private static void initGame() {
+		printWelcomeBanner();
 		initPlayers(askUserBoardSize(), askUserNumberOfPlayers());
 		System.out.println();
 		Player firstPlayer = getFirstPlayer();
@@ -53,7 +44,8 @@ public class LetsPlay {
 		System.out.println("Minimum number of players: 2.\n" + "Minimum garden size: 3x3.\n"
 				+ "You can only plant in empty locations. To plant a tree you give the top left coordinates of the 2x2 space\n"
 				+ "and I will check to make sure all 4 locations are free.\n"
-				+ "Okay .. Let's start the game! May the best gardener win!!!");
+				+ "Okay .. Let's start the game! May the best gardener win!!!\n"
+				+ "--------------------------------------\n");
 	}
 	
 	private static int askUserDefaultBoard() {
@@ -283,7 +275,7 @@ public class LetsPlay {
 		Player winner = null;
 		while (true) {
 			rounds++;
-			System.out.println("/////////////// Round " + rounds + " /////////////// \n");
+			System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ Round " + rounds + " /////////////// \n");
 			playersTurn(firstPlayer);
 			if (firstPlayer.isGardenFull()) {
 				winner = firstPlayer;
@@ -304,12 +296,13 @@ public class LetsPlay {
 	}
 	
 	private static void printResultsOfTheGame(Player winner, int rounds) {
-		System.out.println("FINAL RESULTS\n" 
+		System.out.println("><><>< FINAL RESULTS ><><><\n" 
 							+ "------------------------------------");
-		System.out.println("Here are the gardens after " + rounds + " rounds");
+		System.out.println("Here are the gardens after " + rounds + " rounds\n");
 		for (Player player : players) {
-			System.out.println(player.getName() + "'s garden");
+			System.out.println("-> " + player.getName() + "'s garden");
 			player.showGarden();
+			System.out.println("------------------");
 		}
 		System.out.println("And the winner is ..... " + winner.getName() + "!!!!!\n"
 							+ "What a beautiful garden you have.\n\n"

@@ -51,7 +51,7 @@ public class Garden {
 	}
 	
 	private void printLocationError(int r, int c) {
-		System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
+		System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a -" + getInLocation(r, c) + "-"
 		+ "\n" + "Please enter a new set of coordinates: ");
 	}
 
