@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -9,6 +10,16 @@ public class LetsPlay {
 	static Player[] players;
 
 	public static void main(String[] args) {
+//		Player p = new Player("Qwe", 3);
+//		
+//		p.plantTreeInGarden(1, 1);
+//
+//		p.showGarden();
+//		System.out.println(p.evalSpaceAndPlantTree(0, 0));
+//		System.out.println("------------------");
+////		p.plantTreeInGarden(1, 0);
+
+
 		initGame();
 	}
 
@@ -16,9 +27,9 @@ public class LetsPlay {
 		initPlayers(askUserBoardSize(), askUserNumberOfPlayers());
 		System.out.println();
 		Player firstPlayer = getFirstPlayer();
-		System.out.println("\n" + firstPlayer.getName() + " goes first.\n\n" + "Time to play!!!\n" + "---------------------");
+		System.out.println("\n" + firstPlayer.getName() + " goes first.\n\n" + "Time to play!!!\n" + "--------------------------------------");
 		playGame(firstPlayer);
-		System.out.println("---------------------");
+		System.out.println("--------------------------------------");
 	}
 
 	private static void printWelcomeBanner() {
@@ -29,11 +40,11 @@ public class LetsPlay {
 	}
 
 	private static void printRulesOfTheGame() {
-		System.out.println("Rules of the game:\n" + "-----------------------------");
+		System.out.println("Rules of the game:\n" + "--------------------------------------");
 		System.out.println("To win this game you need some luck with the dice and a bit of strategy.\n"
 				+ "Your garden is an NxN lot. You can plant flowers or trees. A flower takes one spot. A tree takes 4 spots (2x2).\n"
 				+ "You roll the dice and based on the outcome you get to plant a pre-set number of trees and flowers.");
-		System.out.println("Roles and theor outcome: \n" + "-----------------------------");
+		System.out.println("Roles and theor outcome: \n" + "--------------------------------------");
 		System.out.println("	3: plan a tree (2x2) and a flower (1x1)\n" + "	6: plant 2 flowers (2 times 1x1)\n"
 				+ "	12: plant 2 trees (2 times 2x2)\n"
 				+ "	5 or 10: the rabbit will eat something that you have planted - might be a flower or\n"
@@ -46,32 +57,44 @@ public class LetsPlay {
 	}
 	
 	private static int askUserDefaultBoard() {
-		System.out.print(
-				"The default garden size is a 3x3 square. You can use this default board size or change the size\n\n"
-						+ "---------------------------------\n"
+		System.out.print("The default garden size is a 3x3 square. You can use this default board size or change the size\n\n"
+						+ "--------------------------------------\n"
 						+ "Enter 0 to use the default garden size or -1 to enter your own size: ");
 		while (true) {
-			int answer = in.nextInt();
-			if (answer == -1 || answer == 0) {
-				return answer;
+			try {
+				int answer = in.nextInt();
+				if (answer == -1 || answer == 0) {
+					return answer;
+				}
+				System.out.println("Sorry but " + answer + " is not a legal choice. Enter your choice:");
 			}
-			System.out.println("Sorry but " + answer + " is not a legal choice. Enter your choice:");
+			catch(InputMismatchException e) {
+				System.out.print("\n*** Answer must be an integer!!! \n"
+						+ "Enter 0 to use the default garden size or -1 to enter your own size: ");
+				in.next();
+			}
 		}
 	}
 	
 	private static int askUserCustomBoardSize() {
 		System.out.print("What size board would you like? (minimum size 3) ");
 		while (true) {
-			int size = in.nextInt();
-			if (size == 0) {
-				System.out.println("Size of the board is 3\n");
-				return 3;
+			try {
+				int size = in.nextInt();
+				if (size == 0) {
+					System.out.println("\nSize of the board is 3\n");
+					return 3;
+				}
+				if (size >= 3) {
+					System.out.println("\nSize of the board is " + size + "\n");
+					return size;
+				}
+				System.out.println("\nSize must be minimum 3x3\nEnter again.");
+			} catch (InputMismatchException e) {
+				System.out.print("*** Size of the board can only be an integer!!!\n"
+						+ "What size board would you like? (minimum size 3) ");
+				in.next();
 			}
-			if (size >= 3) {
-				System.out.println("Size of the board is " + size + "\n");
-				return size;
-			}
-			System.out.println("Size must be minimum 3x3\n" + "Enter again.");
 		}
 	}
 
@@ -80,19 +103,26 @@ public class LetsPlay {
 		if (size == -1) {
 			return askUserCustomBoardSize();
 		}
-		System.out.println("Size is of the board is 3");
+		System.out.println("\nSize is of the board is 3");
 		return 3;
 	}
 
 	private static int askUserNumberOfPlayers() {
+		System.out.println("\nHow many gardeners will there be (minimum 2 required to play, max allowed 10)? ");
 		while (true) {
-			System.out.println("How many gardeners will there be (minimum 2 required to play, max allowed 10)? ");
-			int numOfPlayers = in.nextInt();
-			if (numOfPlayers >= 2 && numOfPlayers <= 10) {
-				System.out.println("Great, " + numOfPlayers + " players it will be!\n");
-				return numOfPlayers;
+			try {
+				int numOfPlayers = in.nextInt();
+				if (numOfPlayers >= 2 && numOfPlayers <= 10) {
+					System.out.println("Great, " + numOfPlayers + " players it will be!\n");
+					return numOfPlayers;
+				}
+				System.out.println("** Sorry but " + numOfPlayers + " is not a legal number of players.");
+			} catch (InputMismatchException e) {
+				System.out.println(
+						" \n*** Number of gardeners must be an integer!!! \n"
+						+ "How many gardeners will there be (minimum 2 required to play, max allowed 10)? ");
+				in.next();
 			}
-			System.out.println("** Sorry but " + numOfPlayers + " is not a legal number of players.");
 		}
 	}
 
@@ -127,7 +157,7 @@ public class LetsPlay {
 		for (Player player : players) {
 			for (Player other : players) {
 				if (player != other && player.diceEquals(other)) {
-					System.out.println("We will start over as -" + player.getDiceValue() + "- was rolled by " + other.getName() + " as well.\n");
+					System.out.println("We will start over as -" + player.getDiceValue() + " - was rolled by " + other.getName() + " as well.\n");
 					return true;
 				}
 			}
@@ -147,43 +177,52 @@ public class LetsPlay {
 	
 	// Returning always array of two values with indexes 0 and 1 for row and column values correspondingly
 	private static int[] getRowColumn(Player player) {
-		int r = 0, c = 0;
 		while (true) {
-			r = in.nextInt();
-			c = in.nextInt();
-			if (r >= player.getSizeOfBoard() || c >= player.getSizeOfBoard()) 
-				System.out.println("*** You can only plant on garden's territory!!!");
-			else 
-				break;
-		}
-		return new int[]{r, c};
-	}
-	
-	private static void plantTreeForPlayer(Player player) {
-		while (true) {
-			int[] rowCol = getRowColumn(player);
-			if (player.evalPlayersTree(rowCol[0], rowCol[1])) {
-				break;
+			try {
+				int r = in.nextInt();
+				int c = in.nextInt();
+				if (r >= 0 && c >= 0 && r < player.getSizeOfBoard() && c < player.getSizeOfBoard()) {
+					return new int[] { r, c };
+				}
+				System.out.println("*** You can only plant within garden bounds!!!");
+			} catch (InputMismatchException e) {
+				System.out.print("\n*** You can only enter coordinates as an integer!!!\nEnter again: ");
+				in.next();
 			}
 		}
 	}
+
+	private static void plantTreeForPlayer(Player player) {
+		if (player.howManyTreesPossible() > 0) {
+			while (true) {
+				int[] rowCol = getRowColumn(player);
+				if (player.evalSpaceAndPlantTree(rowCol[0], rowCol[1])) {
+					break;
+				} 
+			}
+		}
+		else {
+			System.out.println("\n *** " + player.getName() +  ", you do not have enough space in your garden to plant a tree!!! :( .");
+		}	
+	}
 	
 	private static void plantFlowerForPlayer(Player player) {
-		while (true) {
-			int[] rowCol = getRowColumn(player);
-			if (player.evalPlayersFlower(rowCol[0], rowCol[1])) {
-				break;
+		if (!player.isGardenFull()) {
+			while (true) {
+				int[] rowCol = getRowColumn(player);
+				if (player.evalSpaceAndPlantFlower(rowCol[0], rowCol[1])) {
+					break;
+				}
 			}
 		}
 	}
 	
 	
 	private static void plantTreeAndFlower(Player player) {
-		System.out.print((player.howManyTreesPossible() == 1) ? "There is enough room for 1 tree in your garden. Enter coordinates as row column: ": "Let's start with the tree. You have " + player.howManyTreesPossible() + " places to do this.\n"
-				+ "Enter coordinates as row column: ");
+		System.out.print((player.howManyTreesPossible() > 0) ? ((player.howManyTreesPossible() == 1) ? "There is enough room for 1 tree in your garden. Enter coordinates as row column: ": "Let's start with the tree. You have " + player.howManyTreesPossible() + " places to do this.\nEnter coordinates as row column: ") : "");
+
 		plantTreeForPlayer(player);
-		System.out.println();
-		System.out.println("You still have a flower to plant (1x1)");
+		System.out.println("\nYou still have a flower to plant (1x1)");
 		player.showGarden();
 		System.out.print("You now have " + player.howManyFlowersPossible() + " places to do this.\n"
 				+ "Enter coordinates as row column: ");
@@ -195,28 +234,27 @@ public class LetsPlay {
 				+ "First flower - Enter coordinates as row column: ");
 		plantFlowerForPlayer(player);
 		player.showGarden();
-		System.out.print("Second flower - Enter coordinates as row column: ");
+		System.out.print((!player.isGardenFull()) ? "Second flower - Enter coordinates as row column: " : "");
 		plantFlowerForPlayer(player);
 	}
 	
 	private static void plantTwoTrees(Player player) {
-		System.out.print((player.howManyTreesPossible() == 1) ? "There is enough room for 1 tree in your garden. Enter coordinates as row column: ": "You have " + player.howManyTreesPossible() + " spaces to plant trees\n"
-				+ "First tree -Enter coordinates as row column: ");
+		System.out.print((player.howManyTreesPossible() > 0) ? ((player.howManyTreesPossible() == 1) ? "There is enough room for 1 tree in your garden. Enter coordinates as row column: ": "You have " + player.howManyTreesPossible() + " spaces to plant trees\nFirst tree -Enter coordinates as row column: \" ") : "");
 		plantTreeForPlayer(player);
-		System.out.print("Second tree -Enter coordinates as row column: ");
+		System.out.print((player.howManyTreesPossible() > 0) ? "Second tree - Enter coordinates as row column: " : "");
 		player.showGarden();
 		plantTreeForPlayer(player);
 	}
 	
 	private static void plantATree(Player player) {
-		System.out.print((player.howManyTreesPossible() == 1) ? "There is enough room for 1 tree in your garden. Enter coordinates as row column: ": "You have " + player.howManyTreesPossible() + " spaces to plant trees\n"
-				+ "Enter coordinates as row column: ");
+		System.out.print((player.howManyTreesPossible() > 0)  ?  ((player.howManyTreesPossible() == 1) ? "There is enough room for 1 tree in your garden. Enter coordinates as row column: ": "You have " + player.howManyTreesPossible() + " spaces to plant trees\nEnter coordinates as row column: ") : "");
+		System.out.print((player.howManyTreesPossible() > 0)  ? "Enter coordinates as row column: " : "");
 		plantTreeForPlayer(player);
 	}
 	
 	private static void plantAFlower(Player player) {
-		System.out.print("You have " + player.howManyFlowersPossible() + " spaces to plant flowers\n"
-				+ "Enter coordinates as row column: ");
+		System.out.println("You have " + player.howManyFlowersPossible() + " spaces to plant flowers\n"
+				+  "Enter coordinates as row column: " );
 		plantFlowerForPlayer(player);
 	}
 	
@@ -227,6 +265,7 @@ public class LetsPlay {
 	private static void playersTurn(Player player) {
 		System.out.println(player.getName() + ", you rolled " + player.rollDice() + " (Die 1: " + player.getPlayerDice().getDie1() + " Die 2: " + player.getPlayerDice().getDie2() + ")");
 		printWhatShouldBePlanted(player.getDiceValue(), player);
+		System.out.println("--------------------------------------");
 		player.showGarden();
 		switch (player.getDiceValue()) {
 			case 3: plantTreeAndFlower(player); break;
@@ -236,7 +275,7 @@ public class LetsPlay {
 			case 2: case 4: case 8: plantATree(player); break;
 			case 7: case 9: case 11: plantAFlower(player); break;		
 		}
-		System.out.println("\n============================\n");
+		System.out.println("\n======================================\n");
 	}
 
 	private static void playGame(Player firstPlayer) {
@@ -244,10 +283,12 @@ public class LetsPlay {
 		Player winner = null;
 		while (true) {
 			rounds++;
+			System.out.println("/////////////// Round " + rounds + " /////////////// \n");
 			playersTurn(firstPlayer);
 			if (firstPlayer.isGardenFull()) {
 				winner = firstPlayer;
 				printResultsOfTheGame(winner, rounds);
+				return;
 			}
 			for (Player player : players) {
 				if (player != firstPlayer) {
@@ -264,7 +305,7 @@ public class LetsPlay {
 	
 	private static void printResultsOfTheGame(Player winner, int rounds) {
 		System.out.println("FINAL RESULTS\n" 
-							+ "-------------");
+							+ "------------------------------------");
 		System.out.println("Here are the gardens after " + rounds + " rounds");
 		for (Player player : players) {
 			System.out.println(player.getName() + "'s garden");

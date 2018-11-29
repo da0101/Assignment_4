@@ -30,49 +30,61 @@ public class Garden {
 	}
 
 	public void plantFlower(int r, int c) {
-		if (r >= size || c >= size) {
-			System.out.println("*** You cannot plant Flowers outside your garden!!!\n"
-					+ "--------------------------------------------------");
-			return;
-		} else {
+		if (r >= 0 && c >= 0 && r < size && c < size) {
 			garden[r][c] = 'f';
+			return;
 		}
+		System.out.println("*** You cannot plant Flowers outside your garden!!!\n"
+				+ "--------------------------------------------------");
 	}
 
 	public void plantTree(int r, int c) {
-		if (r >= size - 1 || c >= size - 1) {
-			System.out.println("*** You cannot plant Trees outside your garden!!!\n"
-					+ "-------------------------------------------------");
-			return;
-		} else {
+		if (r >= 0 && c >= 0 && r < size-1 && c < size-1) {
 			garden[r][c] = 't';
 			garden[r + 1][c] = 't';
 			garden[r][c + 1] = 't';
 			garden[r + 1][c + 1] = 't';
+			return;
 		}
-		return;
+		System.out.println("*** You cannot plant Trees outside your garden!!!\n"
+				+ "-------------------------------------------------");
+	}
+	
+	private void printLocationError(int r, int c) {
+		System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
+		+ "\n" + "Please enter a new set of coordinates: ");
 	}
 
-	public boolean evalSpaceForTree(int r, int c) {
-		if (getInLocation(r, c) == '-') {
-			plantTree(r, c);
-			return true;
-		} else {
-			System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
-					+ "\n" + "Please enter a new set of coordinates: ");
-			return false;
+	public boolean evalSpaceAndPlantTree(int r, int c) {
+		if (r >= 0 && c >= 0 && r <= size - 1 && c <= size - 1) {
+			if (getInLocation(r, c) == '-' && getInLocation(r + 1, c) == '-' && getInLocation(r, c + 1) == '-' && getInLocation(r + 1, c + 1) == '-') {
+				plantTree(r, c);
+				return true;
+			}
+			if (getInLocation(r, c) != '-') {
+				printLocationError(r, c);
+			}
+			else if (getInLocation(r + 1, c) != '-') {
+				printLocationError(r + 1, c);
+			}
+			else if (getInLocation(r, c + 1) != '-') {
+				printLocationError(r, c + 1);
+			}
+			else if (getInLocation(r + 1, c + 1) != '-') {
+				printLocationError(r + 1, c + 1);
+			}
 		}
+		System.out.println("*** You cannot plant a tree here.");
+		return false;
 	}
 
-	public boolean evalSpaceForFlower(int r, int c) {
+	public boolean evalSpaceAndPlantFlower(int r, int c) {
 		if (getInLocation(r, c) == '-') {
 			plantFlower(r, c);
 			return true;
-		} else {
-			System.out.println("*** Sorry but location " + r + "," + c + " is already taken by a " + getInLocation(r, c)
-					+ "\nPlease enter a new set of coordinates: ");
-			return false;
 		}
+		printLocationError(r, c);
+		return false;
 	}
 
 	// =================
@@ -81,7 +93,7 @@ public class Garden {
 		int c = rand.nextInt(size);
 		if (getInLocation(r, c) != '-') {
 			removeFlower(r, c);
-			System.out.println("The rabbit ate whatever was planted in location (" + r + "," + c + ")");
+			System.out.println("^^^^^^ The rabbit ate whatever was planted in location (" + r + "," + c + ").");
 			System.out.println(this);
 		}
 	}
@@ -112,7 +124,7 @@ public class Garden {
 		int spotForFlowers = 0;
 		for (int r = 0; r < size; r++) {
 			for (int c = 0; c < size; c++) {
-				if (garden[r][c] != 'f' && garden[r][c] != 't') {
+				if (garden[r][c] == '-') {
 					spotForFlowers++;
 				}
 			}
@@ -121,15 +133,14 @@ public class Garden {
 	}
 
 	public boolean gardenFull() {
-		boolean full = true;
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				if (garden[i][j] == '-') {
-					full = false;
+					return false;
 				}
 			}
 		}
-		return full;
+		return true;
 	}
 
 	public String toString() {

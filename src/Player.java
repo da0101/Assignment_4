@@ -45,12 +45,12 @@ public class Player {
 		garden.removeRandom();
 	}
 
-	public boolean evalPlayersTree(int r, int c) {
-		return garden.evalSpaceForTree(r, c);
+	public boolean evalSpaceAndPlantTree(int r, int c) {
+		return garden.evalSpaceAndPlantTree(r, c);
 	}
 
-	public boolean evalPlayersFlower(int r, int c) {
-		return garden.evalSpaceForFlower(r, c);
+	public boolean evalSpaceAndPlantFlower(int r, int c) {
+		return garden.evalSpaceAndPlantFlower(r, c);
 	}
 
 	public boolean isGardenFull() {
