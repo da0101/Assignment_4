@@ -23,34 +23,34 @@
 import java.util.Random;
 
 public class Dice {
-	
+
 	// Declaring classes objects and variables.
 	private int die1, die2;
-	Random random = new Random(); 
-	
-	// Constructor 
+	Random random = new Random();
+
+	// Constructor
 	public Dice() {
 		this.die1 = 0;
 		this.die2 = 0;
 	}
-	
-	//=====================
+
+	// =====================
 	public int getDie1() {
 		return this.die1;
-	}	
-	
+	}
+
 	public int getDie2() {
 		return this.die2;
 	}
-	
+
 	public int getDiesSum() {
 		return this.die1 + this.die2;
 	}
-	
+
 	public String toString() {
-		return new String("Die 1 has a value of - " + die1 + " - and die 2 has value of - " + die2 + " -.");	
+		return new String("Die 1 has a value of - " + die1 + " - and die 2 has value of - " + die2 + " -.");
 	}
-	
+
 	// Generating random dice values.
 	public int rollDice() {
 		this.die1 = random.nextInt(6) + 1;
@@ -59,9 +59,3 @@ public class Dice {
 	}
 
 }
-
-
-
-
-
-

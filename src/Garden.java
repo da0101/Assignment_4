@@ -85,25 +85,24 @@ public class Garden {
 
 	// Checking if there is enough space to plant a tree.
 	public boolean evalSpaceAndPlantTree(int r, int c) {
-		if (r >= 0 && c >= 0 && r <= size - 1 && c <= size - 1) {
-			if (getInLocation(r, c) == '-' && getInLocation(r + 1, c) == '-' && getInLocation(r, c + 1) == '-' && getInLocation(r + 1, c + 1) == '-') {
+		if (r >= 0 && c >= 0 && r <= size - 1 && c <= size - 1 && r + 1 < size && c + 1 < size) {
+			if (getInLocation(r, c) == '-' && getInLocation(r + 1, c) == '-' && getInLocation(r, c + 1) == '-'
+					&& getInLocation(r + 1, c + 1) == '-') {
 				plantTree(r, c);
 				return true;
 			}
 			if (getInLocation(r, c) != '-') {
 				printLocationError(r, c);
-			}
-			else if (getInLocation(r + 1, c) != '-') {
+			} else if (getInLocation(r + 1, c) != '-') {
 				printLocationError(r + 1, c);
-			}
-			else if (getInLocation(r, c + 1) != '-') {
+			} else if (getInLocation(r, c + 1) != '-') {
 				printLocationError(r, c + 1);
-			}
-			else if (getInLocation(r + 1, c + 1) != '-') {
+			} else if (getInLocation(r + 1, c + 1) != '-') {
 				printLocationError(r + 1, c + 1);
 			}
 		}
-		System.out.println("*** You cannot plant a tree here.");
+		System.out.println((r + 1 < size && c + 1 < size) ? ""
+				: "*** You cannot plant Trees outside your garden!!!\n-------------------------------------------------");
 		return false;
 	}
 

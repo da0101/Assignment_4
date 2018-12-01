@@ -270,7 +270,7 @@ public class LetsPlay {
 	private static void plantTreeAndFlower(Player player) {
 		// This line is written this way purposefully; depending on state of the game different message is given to a player. 
 		System.out.print((player.howManyTreesPossible() > 0) ? ((player.howManyTreesPossible() == 1)
-								? "There is enough room for 1 tree in your garden. Enter coordinates as row column: "
+								? "There is enough room for 1 tree in your garden. \nEnter coordinates as row column: "
 								: "Let's start with the tree. You have " + player.howManyTreesPossible()
 										+ " places to do this.\nEnter coordinates as row column: ") : "");
 		plantTreeForPlayer(player);
@@ -295,9 +295,9 @@ public class LetsPlay {
 	private static void plantTwoTrees(Player player) {
 		// This line is written this way purposefully; depending on state of the game different message is given to a player. 
 		System.out.print((player.howManyTreesPossible() > 0) ? ((player.howManyTreesPossible() == 1)
-								? "There is enough room for 1 tree in your garden. Enter coordinates as row column: "
+								? "There is enough room for 1 tree in your garden. \nEnter coordinates as row column: "
 								: "You have " + player.howManyTreesPossible()
-										+ " spaces to plant trees\nFirst tree -Enter coordinates as row column: \" ") : "");
+										+ " spaces to plant trees\nFirst tree - Enter coordinates as row column: \" ") : "");
 		plantTreeForPlayer(player);
 		System.out.print((player.howManyTreesPossible() > 0) ? "Second tree - Enter coordinates as row column: " : "");
 		player.showGarden();
@@ -308,7 +308,7 @@ public class LetsPlay {
 	private static void plantATree(Player player) {
 		// This line is written this way purposefully; depending on state of the game different message is given to a player. 
 		System.out.print((player.howManyTreesPossible() > 0) ? ((player.howManyTreesPossible() == 1)
-								? "There is enough room for 1 tree in your garden. Enter coordinates as row column: "
+								? "There is enough room for 1 tree in your garden. \nEnter coordinates as row column: "
 								: "You have " + player.howManyTreesPossible()
 										+ " spaces to plant trees\nEnter coordinates as row column: ") : "");
 		System.out.print((player.howManyTreesPossible() > 0) ? "Enter coordinates as row column: " : "");
